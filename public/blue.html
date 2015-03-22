@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <title>Blue Portal</title>
+        <script src="/socket.io/socket.io.js"></script>
+        <style>
+
+            #data-in {
+                margin: 5% 5% 0 5%;
+                height: 80%;
+                width: 90%;
+                resize: none;
+                background-color: #DDF;
+            }
+
+        </style>
+    </head>
+    <body>
+        <textarea id="data-in" autocomplete="off"></textarea>
+        <script>
+(function() {
+
+var socket = io(location.origin),
+    textarea = document.getElementById('data-in'),
+    emitHandle = null,
+    locked = false,
+    lockHandle = null;
+
+function schedule(handler) {
+    if (emitHandle !== null) clearTimeout(emitHandle);
+
+    emitHandle = setTimeout(function() {
+        emitHandle = null;
+        handler();
+    }, 1000);
+}
+
+function onInput(e) {
+    if (locked) return;
+
+    schedule(function() {
+       socket.emit('blue', e.target.value);
+    });
+}
+
+function onOrange(data) {
+    lock();
+    textarea.value = data;
+}
+
+function lock() {
+    if (lockHandle !== null) clearTimeout(lockHandle);
+
+    setTimeout(function() {
+        locked = false;
+        lockHandle = null;
+    }, 5);
+
+    locked = true;
+}
+
+textarea.addEventListener('input', onInput);
+
+socket.on('orange', onOrange);
+
+})()
+        </script>
+    </body>
+</html>
