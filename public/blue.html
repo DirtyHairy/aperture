@@ -46,15 +46,15 @@ SOFTWARE.
 
 var socket = io(location.origin),
     textarea = document.getElementById('data-in'),
-    emitHandle = null,
+    scheduleHandle = null,
     locked = false,
     lockHandle = null;
 
 function schedule(handler) {
-    if (emitHandle !== null) clearTimeout(emitHandle);
+    if (scheduleHandle !== null) clearTimeout(scheduleHandle);
 
-    emitHandle = setTimeout(function() {
-        emitHandle = null;
+    scheduleHandle = setTimeout(function() {
+        scheduleHandle = null;
         handler();
     }, 1000);
 }
@@ -75,7 +75,7 @@ function onOrange(data) {
 function lock() {
     if (lockHandle !== null) clearTimeout(lockHandle);
 
-    setTimeout(function() {
+    lockHandle = setTimeout(function() {
         locked = false;
         lockHandle = null;
     }, 5);
