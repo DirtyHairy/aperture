@@ -69,6 +69,7 @@ var rl = readline.createInterface({
 });
 
 rl.on('line', onLine);
+rl.on('SIGINT', onSigint);
 
 readline.cursorTo(process.stdout, 0, 0);
 readline.clearScreenDown(process.stdout);
@@ -102,4 +103,11 @@ function onBlue(data) {
 
 function send(data) {
     io.sockets.emit('orange', buffer);
+}
+
+function onSigint() {
+    server.close();
+    rl.close();
+    process.stdout.write('\n');
+    process.exit();
 }
